@@ -55,15 +55,8 @@ public class SellerDaoJDBC implements SellerDao{
 			rs = st.executeQuery();
 			
 			if(rs.next()) {
-				int depId = rs.getInt("DepartmentId");
-				String depName = rs.getString("DepName");
-				Department dep = new Department(depId, depName);
-				int sellerId = rs.getInt("Id");
-				String sellerName = rs.getString("Name");
-				String sellerEmail = rs.getString("Email");
-				Date sellerBirth = rs.getDate("BirthDate");
-				double sellerSalary = rs.getDouble("BaseSalary");
-				Seller seller = new Seller(sellerId, sellerName, sellerEmail, sellerBirth, sellerSalary, dep);
+				Department dep = instantiateDepartment(rs);
+				Seller seller = instantiateSeller(rs,dep);
 				return seller;
 			}
 			return null;
@@ -76,6 +69,23 @@ public class SellerDaoJDBC implements SellerDao{
 			Db.closeResultSet(rs); 
 			//não fecho a conexão porque outros métodos locais podem utilizar ela.
 		}
+	}
+
+	private Seller instantiateSeller(ResultSet rs, Department dep) throws SQLException {
+		int sellerId = rs.getInt("Id");
+		String sellerName = rs.getString("Name");
+		String sellerEmail = rs.getString("Email");
+		Date sellerBirth = rs.getDate("BirthDate");
+		double sellerSalary = rs.getDouble("BaseSalary");
+		Seller seller = new Seller(sellerId, sellerName, sellerEmail, sellerBirth, sellerSalary, dep);
+		return seller;
+	}
+
+	private Department instantiateDepartment(ResultSet rs) throws SQLException {
+		int depId = rs.getInt("DepartmentId");
+		String depName = rs.getString("DepName");
+		Department dep = new Department(depId, depName);
+		return dep;
 	}
 
 	@Override
