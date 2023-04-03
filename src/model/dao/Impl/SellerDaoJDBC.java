@@ -34,25 +34,24 @@ public class SellerDaoJDBC implements SellerDao {
 					   (Name, Email, BirthDate, BaseSalary, DepartmentId)
 					   VALUES
 					   (?, ?, ?, ?, ?)
-					""", Statement.RETURN_GENERATED_KEYS);//retorna as generated keys para poder pegar o Id do vendedor
+					""", Statement.RETURN_GENERATED_KEYS);// retorna as generated keys para poder pegar o Id do vendedor
 
 			st.setString(1, seller.getName());
 			st.setString(2, seller.getEmail());
 			st.setDate(3, new java.sql.Date(seller.getBirthDate().getTime())); // instanciando como data sql
 			st.setDouble(4, seller.getBaseSalary());
 			st.setInt(5, seller.getDepartment().getId());
-			
+
 			int rowsAffected = st.executeUpdate();
-			
-			if(rowsAffected > 0) {
+
+			if (rowsAffected > 0) {
 				ResultSet rs = st.getGeneratedKeys();
-				if(rs.next()) {
-					int id = rs.getInt(1);//a primeira posição das generatedKeys é o Id nesse caso
+				if (rs.next()) {
+					int id = rs.getInt(1);// a primeira posição das generatedKeys é o Id nesse caso
 					seller.setId(id);
 				}
 				Db.closeResultSet(rs);
-			}
-			else {
+			} else {
 				throw new DbException("Unexpected error! No rows affected!");
 			}
 		} catch (SQLException e) {
@@ -60,12 +59,32 @@ public class SellerDaoJDBC implements SellerDao {
 		} finally {
 			Db.closeStatement(st);
 		}
-
 	}
 
 	@Override
 	public void update(Seller seller) {
-		// TODO Auto-generated method stub
+		PreparedStatement st = null;
+		try {
+			st = conn.prepareStatement("""
+					UPDATE seller
+					SET Name = ?, Email = ?, BirthDate = ?, BaseSalary = ?, DepartmentId = ?
+					WHERE Id = ?
+					""", Statement.RETURN_GENERATED_KEYS);//retorna as generated keys para poder pegar o Id do vendedor
+
+			st.setString(1, seller.getName());
+			st.setString(2, seller.getEmail());
+			st.setDate(3, new java.sql.Date(seller.getBirthDate().getTime())); // instanciando como data sql
+			st.setDouble(4, seller.getBaseSalary());
+			st.setInt(5, seller.getDepartment().getId());
+			st.setInt(6, seller.getId());
+			
+			st.executeUpdate();
+			
+		} catch (SQLException e) {
+			throw new DbException(e.getMessage());
+		} finally {
+			Db.closeStatement(st);
+		}
 
 	}
 
@@ -132,7 +151,7 @@ public class SellerDaoJDBC implements SellerDao {
 			st = conn.prepareStatement("""
 					SELECT seller.*,department.Name as DepName
 					FROM seller INNER JOIN department
-					ON seller.DepartmentId = department.Id  
+					ON seller.DepartmentId = department.Id
 					ORDER BY Name
 					""");
 
