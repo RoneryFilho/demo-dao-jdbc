@@ -4,7 +4,7 @@ import java.io.Serializable;
 import java.util.Date;
 import java.util.Objects;
 
-public class Seller implements Serializable{
+public class Seller implements Serializable {
 
 	private static final long serialVersionUID = 1L;
 	private Integer id;
@@ -12,9 +12,9 @@ public class Seller implements Serializable{
 	private String email;
 	private Date birthDate;
 	private Double baseSalary;
-	
+
 	private Department department;
-	
+
 	public Seller() {
 
 	}
@@ -28,10 +28,12 @@ public class Seller implements Serializable{
 		this.department = department;
 	}
 
-
-
 	public Integer getId() {
 		return id;
+	}
+	
+	public void setId(Integer id) {
+		this.id = id;
 	}
 
 	public String getName() {
@@ -48,6 +50,10 @@ public class Seller implements Serializable{
 
 	public Double getBaseSalary() {
 		return baseSalary;
+	}
+
+	public Department getDepartment() {
+		return department;
 	}
 
 	@Override
@@ -69,7 +75,8 @@ public class Seller implements Serializable{
 
 	@Override
 	public String toString() {
-		return "Seller [id=" + this.id + ", name=" + this.name + ", email=" + this.email + ", birthDate=" + this.birthDate + ", baseSalary="
-				+ this.baseSalary + ", department=" + this.department + "]";
+		return "Seller [id=" + this.id + ", name=" + this.name + ", email=" + this.email + ", birthDate="
+				+ this.birthDate + ", baseSalary=" + this.baseSalary + ", department=" + this.department + "]";
 	}
+
 }
